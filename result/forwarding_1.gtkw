@@ -1,0 +1,59 @@
+[*]
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Thu Dec 11 12:32:05 2025
+[*]
+[dumpfile] "C:\Users\Administrator\Desktop\pipelined-CPU\cpu.vcd"
+[dumpfile_mtime] "Thu Dec 11 12:19:06 2025"
+[dumpfile_size] 23539
+[savefile] "C:\Users\Administrator\Desktop\pipelined-CPU\forwarding_1.gtkw"
+[timestart] 7560
+[size] 2560 1369
+[pos] -321 -321
+*-12.997999 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_CPU.
+[treeopen] tb_CPU.dut.
+[treeopen] tb_CPU.dut.IF_stage.
+[sst_width] 197
+[signals_width] 178
+[sst_expanded] 1
+[sst_vpaned_height] 423
+@28
+tb_CPU.dut.clk
+tb_CPU.dut.rst
+@22
+tb_CPU.dut.IF_ID_reg.pc_o[31:0]
+tb_CPU.dut.IF_stage.instr_o[31:0]
+@200
+-
+@22
+tb_CPU.dut.IF_ID_reg.instr_o[31:0]
+tb_CPU.dut.ID_stage.rs_addr_o[4:0]
+tb_CPU.dut.ID_stage.rt_addr_o[4:0]
+tb_CPU.dut.ID_stage.rd_addr_o[4:0]
+@200
+-
+@28
+tb_CPU.dut.EX_stage.ForwardA_i[1:0]
+@22
+tb_CPU.dut.EX_stage.ALU_src1[31:0]
+@28
+tb_CPU.dut.EX_stage.ForwardB_i[1:0]
+@22
+tb_CPU.dut.EX_stage.ALU_src2[31:0]
+tb_CPU.dut.EX_stage.ALU_result[31:0]
+@200
+-
+@28
+tb_CPU.dut.EX_MEM_reg.RegWrite_o
+@22
+tb_CPU.dut.EX_MEM_reg.rd_o[4:0]
+tb_CPU.dut.EX_MEM_reg.ALU_o[31:0]
+@200
+-
+@28
+tb_CPU.dut.MEM_WB_reg.RegWrite_i
+@22
+tb_CPU.dut.MEM_WB_reg.rd_o[4:0]
+tb_CPU.dut.MEM_WB_reg.ALU_o[31:0]
+[pattern_trace] 1
+[pattern_trace] 0

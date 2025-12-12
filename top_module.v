@@ -45,6 +45,7 @@ wire        PC_Write;
 wire        Branch;
 wire        Zero;
 wire [31:0] branch_target;
+wire branch_taken_o;
 
 // IF Stage
 IF IF_stage(
@@ -55,7 +56,11 @@ IF IF_stage(
     .Zero_i(Zero),
     .branch_target_i(branch_target),
     .instr_o(IF_instr),
-    .pc_plus4_o(IF_pc_plus4)
+    .pc_plus4_o(IF_pc_plus4),
+
+
+
+    .branch_taken_o(branch_taken_o)
 );
 
 // ============================================================================
@@ -139,7 +144,18 @@ Hazard_Detection_Unit hazard(
 
     .PC_Write(PC_Write),
     .IF_ID_Write(IF_ID_Write),
-    .ID_EX_Flush(ID_EX_Flush)
+    .ID_EX_Flush(ID_EX_Flush),
+
+
+
+
+    .IF_ID_isBranch(branch_taken_o),
+    .ID_EX_RegWrite(EX_RegWrite),
+    .ID_EX_writeReg(EX_rt_addr),
+    .EX_MEM_RegWrite(MEM_RegWrite),
+    .EX_MEM_writeReg(MEM_WriteAddr),
+    .MEM_WB_RegWrite(WB_RegWrite),
+    .MEM_WB_writeReg(WB_WriteAddr)
 );
 
 // ============================================================================

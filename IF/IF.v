@@ -18,7 +18,10 @@ module IF(
     input  [31:0] branch_target_i,     // branch target address
 
     output [31:0] instr_o,         // 從 IMEM 取出的指令
-    output [31:0] pc_plus4_o       // PC + 4 給 IF/ID
+    output [31:0] pc_plus4_o,       // PC + 4 給 IF/ID
+
+
+    output branch_taken_o
 );
 
 
@@ -29,6 +32,7 @@ reg  [31:0] pc_reg;
 // branch_taken = Branch AND Zero
 // =====================================
 wire branch_taken = Branch_i & Zero_i;
+assign branch_taken_o = branch_taken;
 
 wire [31:0] pc_next = (branch_taken) ?
                       branch_target_i :   // branch 命中 → 跳到目標

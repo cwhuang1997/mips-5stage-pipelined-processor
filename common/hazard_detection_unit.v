@@ -11,7 +11,16 @@ module Hazard_Detection_Unit(
 
     output reg   PC_Write,         // PC_Write = 0 → PC 停住 不更新 PC (也就是下一個 clk時PC 不變)
     output reg   IF_ID_Write,      // IF/ID Write = 0 → IF/ID 暫存器不更新 保持原值
-    output reg   ID_EX_Flush       // 1 → 插入 NOP（讓 EX 泡 1 cycle）
+    output reg   ID_EX_Flush,       // 1 → 插入 NOP（讓 EX 泡 1 cycle）
+
+
+    input IF_ID_isBranch,
+    input ID_EX_RegWrite,
+    input [4:0] ID_EX_writeReg,
+    input EX_MEM_RegWrite,
+    input [4:0] EX_MEM_writeReg,
+    input MEM_WB_RegWrite,
+    input [4:0] MEM_WB_writeReg
 );
 
 always @(*) begin
@@ -32,6 +41,46 @@ always @(*) begin
         IF_ID_Write = 0;   // IF/ID 暫存器保持（避免下一條進入 EX）
         ID_EX_Flush = 1;   // 在 EX 插入 bubble (NOP)
     end
+
+
+
+
+
+
+
+    if (IF_ID_isBranch &&
+        ID_EX_RegWrite &&
+        (ID_EX_writeReg != 0) &&
+        ((ID_EX_writeReg == IF_ID_rs) || (ID_EX_writeReg == IF_ID_rt)))
+    begin
+        PC_Write    = 0;
+        IF_ID_Write = 0;
+        ID_EX_Flush = 1;
+    end
+
+    if (IF_ID_isBranch &&
+        EX_MEM_RegWrite &&
+        (EX_MEM_writeReg != 0) &&
+        ((EX_MEM_writeReg == IF_ID_rs) || (EX_MEM_writeReg == IF_ID_rt)))
+    begin
+        PC_Write    = 0;
+        IF_ID_Write = 0;
+        ID_EX_Flush = 1;
+    end
+
+    if (IF_ID_isBranch &&
+        MEM_WB_RegWrite &&
+        (MEM_WB_writeReg != 0) &&
+        ((MEM_WB_writeReg == IF_ID_rs) || (MEM_WB_writeReg == IF_ID_rt)))
+    begin
+        PC_Write    = 0;
+        IF_ID_Write = 0;
+        ID_EX_Flush = 1;
+    end
+
+
+
+
 end
 
 endmodule

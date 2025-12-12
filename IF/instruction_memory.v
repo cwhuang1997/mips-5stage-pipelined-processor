@@ -13,7 +13,7 @@ initial begin
     // 第 0 行 → memory[0]
     // 第 1 行 → memory[1]
     // 第 N 行 → memory[N]
-    $readmemb("instruction.txt", memory);
+    $readmemb("instruction3.txt", memory);
 end
 
 // ----------------------

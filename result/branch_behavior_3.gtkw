@@ -1,0 +1,45 @@
+[*]
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Thu Dec 11 21:31:19 2025
+[*]
+[dumpfile] "C:\Users\Administrator\Desktop\pipelined-CPU\result\cpu.vcd"
+[savefile] "C:\Users\Administrator\Desktop\pipelined-CPU\result\branch_behavior_3.gtkw"
+[timestart] 0
+[size] 2560 1369
+[pos] -113 -113
+*-14.492613 80500 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_CPU.
+[treeopen] tb_CPU.dut.
+[sst_width] 303
+[signals_width] 305
+[sst_expanded] 1
+[sst_vpaned_height] 423
+@28
+tb_CPU.dut.clk
+tb_CPU.dut.rst
+@22
+tb_CPU.dut.IF_ID_reg.pc_o[31:0]
+tb_CPU.dut.IF_stage.instr_o[31:0]
+@200
+-
+@22
+tb_CPU.dut.ID_stage.instr_i[31:0]
+tb_CPU.dut.ID_stage.rs_data_o[31:0]
+tb_CPU.dut.ID_stage.rt_data_o[31:0]
+@28
+tb_CPU.dut.ID_stage.Zero_o
+tb_CPU.dut.ID_stage.Branch_o
+@22
+tb_CPU.dut.ID_stage.branch_target_o[31:0]
+@200
+-
+@28
+tb_CPU.dut.hazard.IF_ID_isBranch
+tb_CPU.dut.hazard.PC_Write
+tb_CPU.dut.hazard.ID_EX_Flush
+@200
+-
+@23
+tb_CPU.dut.WB_stage.ALU_result_i[31:0]
+[pattern_trace] 1
+[pattern_trace] 0

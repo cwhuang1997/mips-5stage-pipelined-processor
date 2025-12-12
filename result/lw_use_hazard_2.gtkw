@@ -1,0 +1,67 @@
+[*]
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Thu Dec 11 18:32:56 2025
+[*]
+[dumpfile] "C:\Users\Administrator\Desktop\pipelined-CPU\result\cpu.vcd"
+[savefile] "C:\Users\Administrator\Desktop\pipelined-CPU\result\lw_use_hazard_2.gtkw"
+[timestart] 0
+[size] 2560 1369
+[pos] -87 -87
+*-13.653586 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_CPU.
+[treeopen] tb_CPU.dut.
+[sst_width] 197
+[signals_width] 371
+[sst_expanded] 1
+[sst_vpaned_height] 423
+@28
+tb_CPU.clk
+tb_CPU.rst
+@22
+tb_CPU.dut.IF_stage.pc_reg[31:0]
+tb_CPU.dut.IF_stage.instr_o[31:0]
+@200
+-
+@22
+tb_CPU.dut.IF_ID_reg.instr_o[31:0]
+tb_CPU.dut.ID_stage.rs_addr_o[4:0]
+tb_CPU.dut.ID_stage.rs_data_o[31:0]
+tb_CPU.dut.ID_stage.rt_addr_o[4:0]
+tb_CPU.dut.ID_stage.rt_data_o[31:0]
+tb_CPU.dut.ID_stage.imm_o[31:0]
+@28
+tb_CPU.dut.ID_stage.RegWrite_o
+tb_CPU.dut.ID_stage.MemRead_o
+@200
+-
+@28
+tb_CPU.dut.hazard.PC_Write
+tb_CPU.dut.hazard.IF_ID_Write
+tb_CPU.dut.hazard.ID_EX_Flush
+@200
+-
+@28
+tb_CPU.dut.EX_stage.ForwardA_i[1:0]
+@22
+tb_CPU.dut.EX_stage.ALU_src1[31:0]
+@28
+tb_CPU.dut.EX_stage.ForwardB_i[1:0]
+@22
+tb_CPU.dut.EX_stage.ALU_src2[31:0]
+tb_CPU.dut.EX_stage.ALU_result_o[31:0]
+@200
+-
+@28
+tb_CPU.dut.MEM_stage.MemRead_i
+tb_CPU.dut.MEM_stage.RegWrite_o
+@22
+tb_CPU.dut.MEM_stage.ALU_result_o[31:0]
+@200
+-
+@28
+tb_CPU.dut.WB_stage.RegWrite_i
+@22
+tb_CPU.dut.WB_stage.dest_reg_i[4:0]
+tb_CPU.dut.WB_stage.ALU_result_i[31:0]
+[pattern_trace] 1
+[pattern_trace] 0
