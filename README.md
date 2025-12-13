@@ -1,7 +1,7 @@
 # 5-Stage Pipelined MIPS CPU with Hazard Handling
 
 This project implements a **classic 5-stage pipelined MIPS CPU**
-(IF ¡÷ ID ¡÷ EX ¡÷ MEM ¡÷ WB) with complete hazard handling support.
+(IF â†’ ID â†’ EX â†’ MEM â†’ WB) with complete hazard handling support.
 
 Supported hazard mechanisms include:
 - **RAW data hazards resolved by forwarding**
@@ -42,47 +42,47 @@ The datapath follows a standard 5-stage MIPS pipeline architecture:
 
 ```text
 Pipelined-CPU/
-¢u¢w¢w IF/                     # Instruction Fetch
-¢x   ¢u¢w¢w IF.v
-¢x   ¢u¢w¢w IF_ID.v
-¢x   ¢|¢w¢w instruction_memory.v
-¢x
-¢u¢w¢w ID/                     # Instruction Decode
-¢x   ¢u¢w¢w ID.v
-¢x   ¢u¢w¢w decoder.v
-¢x   ¢u¢w¢w reg_file.v
-¢x   ¢u¢w¢w sign_extend.v
-¢x   ¢|¢w¢w ID_EX.v
-¢x
-¢u¢w¢w EX/                     # Execute
-¢x   ¢u¢w¢w ALU.v
-¢x   ¢u¢w¢w EX.v
-¢x   ¢|¢w¢w EX_MEM.v
-¢x
-¢u¢w¢w MEM/                    # Memory Access
-¢x   ¢u¢w¢w data_memory.v
-¢x   ¢|¢w¢w MEM_WB.v
-¢x
-¢u¢w¢w WB/                     # Write Back
-¢x   ¢|¢w¢w WB.v
-¢x
-¢u¢w¢w common/                 # Hazard handling units
-¢x   ¢u¢w¢w forwarding_unit.v
-¢x   ¢|¢w¢w hazard_detection_unit.v
-¢x
-¢u¢w¢w result/                 # Waveforms and figures
-¢x   ¢u¢w¢w forwarding.jpg
-¢x   ¢u¢w¢w load-use-hazard.jpg
-¢x   ¢|¢w¢w branch-hazard.jpg
-¢x
-¢u¢w¢w datapath.jpg            # Pipelined datapath diagram
-¢u¢w¢w instruction1.txt        # RAW hazard (forwarding)
-¢u¢w¢w instruction2.txt        # Load-use hazard
-¢u¢w¢w instruction3.txt        # Control hazard (branch)
-¢u¢w¢w top_module.v
-¢u¢w¢w testbench.v
-¢u¢w¢w cpu.vcd
-¢|¢w¢w README.md
+â”œâ”€â”€ IF/                     # Instruction Fetch
+â”‚   â”œâ”€â”€ IF.v
+â”‚   â”œâ”€â”€ IF_ID.v
+â”‚   â””â”€â”€ instruction_memory.v
+â”‚
+â”œâ”€â”€ ID/                     # Instruction Decode
+â”‚   â”œâ”€â”€ ID.v
+â”‚   â”œâ”€â”€ decoder.v
+â”‚   â”œâ”€â”€ reg_file.v
+â”‚   â”œâ”€â”€ sign_extend.v
+â”‚   â””â”€â”€ ID_EX.v
+â”‚
+â”œâ”€â”€ EX/                     # Execute
+â”‚   â”œâ”€â”€ ALU.v
+â”‚   â”œâ”€â”€ EX.v
+â”‚   â””â”€â”€ EX_MEM.v
+â”‚
+â”œâ”€â”€ MEM/                    # Memory Access
+â”‚   â”œâ”€â”€ data_memory.v
+â”‚   â””â”€â”€ MEM_WB.v
+â”‚
+â”œâ”€â”€ WB/                     # Write Back
+â”‚   â””â”€â”€ WB.v
+â”‚
+â”œâ”€â”€ common/                 # Hazard handling units
+â”‚   â”œâ”€â”€ forwarding_unit.v
+â”‚   â””â”€â”€ hazard_detection_unit.v
+â”‚
+â”œâ”€â”€ result/                 # Waveforms and figures
+â”‚   â”œâ”€â”€ forwarding.jpg
+â”‚   â”œâ”€â”€ load-use-hazard.jpg
+â”‚   â””â”€â”€ branch-hazard.jpg
+â”‚
+â”œâ”€â”€ datapath.jpg            # Pipelined datapath diagram
+â”œâ”€â”€ instruction1.txt        # RAW hazard (forwarding)
+â”œâ”€â”€ instruction2.txt        # Load-use hazard
+â”œâ”€â”€ instruction3.txt        # Control hazard (branch)
+â”œâ”€â”€ top_module.v
+â”œâ”€â”€ testbench.v
+â”œâ”€â”€ cpu.vcd
+â””â”€â”€ README.md
 ```
 
 This structure mirrors the actual pipeline datapath and control logic.
