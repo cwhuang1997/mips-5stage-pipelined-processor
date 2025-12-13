@@ -31,7 +31,7 @@ All behaviors are verified by waveform simulations.
 The datapath follows a standard 5-stage MIPS pipeline architecture:
 
 - Pipeline registers: IF/ID, ID/EX, EX/MEM, MEM/WB
-- ALU used for arithmetic, logic, branch comparison, and address calculation
+- ALU used for arithmetic, logic and address calculation
 - Forwarding paths from EX/MEM and MEM/WB to EX stage
 - Hazard detection logic controls PC write, IF/ID write, and ID/EX flush
 - Branch resolution performed in the ID stage, with wrong-path instruction flush
@@ -102,7 +102,6 @@ add  $4,$3,$3
 ### Description
 
 - ALU results are produced at the end of the EX stage
-- Dependent instructions require operands in their EX stage
 - Data is forwarded from **EX/MEM or MEM/WB to EX**
 - **No pipeline stall is required**
 
@@ -124,7 +123,6 @@ add  $2,$1,$1
 ### Description
 
 - Load data becomes available only after the MEM stage
-- Forwarding alone is insufficient
 - Pipeline behavior:
   - PC and IF/ID stalled for one cycle
   - Bubble inserted via ID/EX flush
@@ -165,17 +163,6 @@ addi $2,$0,7   # branch target
 | Hazard Type | Cause | Resolution |
 |------------|------|------------|
 | RAW hazard | ALU dependency | Forwarding |
-| Load-use hazard | Load latency | Stall + bubble |
+| Load-use hazard (RAW) | Load latency | Stall + bubble |
 | Control hazard | Branch decision | Stall + flush |
 
-> All data hazards in this design are **RAW hazards**.  
-> Load-use hazards are a special case where forwarding is insufficient.
-
----
-
-## Summary
-
-- Complete **5-stage pipelined MIPS CPU**
-- Clean separation of datapath and hazard control logic
-- Stalls applied only when strictly necessary
-- Correct timing behavior verified by waveforms
