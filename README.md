@@ -1,6 +1,6 @@
-# 5-Stage Pipelined MIPS CPU with Hazard Handling
+# 5-Stage Pipelined MIPS Processor with Hazard Handling
 
-This project implements a **classic 5-stage pipelined MIPS CPU**
+This project implements a **classic 5-stage pipelined MIPS processor**
 (IF → ID → EX → MEM → WB) with complete hazard handling support.
 
 Supported hazard mechanisms include:
