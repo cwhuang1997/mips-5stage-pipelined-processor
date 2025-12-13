@@ -1,146 +1,181 @@
-# ðŸ§  5-Stage Pipelined MIPS CPU â€” Hazard Handling
+# 5-Stage Pipelined MIPS CPU with Hazard Handling
 
-This project implements a **classic 5-stage pipelined MIPS CPU**  
-(IF â†’ ID â†’ EX â†’ MEM â†’ WB) with complete hazard handling, including:
+This project implements a **classic 5-stage pipelined MIPS CPU**
+(IF ¡÷ ID ¡÷ EX ¡÷ MEM ¡÷ WB) with complete hazard handling support.
 
+Supported hazard mechanisms include:
 - **RAW data hazards resolved by forwarding**
 - **Load-use hazards resolved by stalling and bubble insertion**
-- **Control hazards due to branch instructions resolved by stalling and flushing**
+- **Control hazards resolved by stall and flush**
 
-The following waveform figures demonstrate correct pipeline behavior under each hazard scenario.
+All behaviors are verified by waveform simulations.
 
 ---
 
-## ðŸ“Œ Pipeline Overview
+## Pipeline Overview
 
-- **Pipeline stages**: IF / ID / EX / MEM / WB  
-- **Execution model**: In-order, single-issue  
-- **Register write-back**: WB stage only  
-- **Branch decision**: ID stage  
+- **Pipeline stages**: IF / ID / EX / MEM / WB
+- **Execution model**: In-order, single-issue
+- **Register write-back**: WB stage only
+- **Branch decision**: ID stage
 - **Hazard handling units**:
   - Forwarding Unit
-  - Hazard Detection Unit (stall / flush control)
+  - Hazard Detection Unit
 
 ---
 
-## 1ï¸âƒ£ RAW Data Hazard (Resolved by Forwarding)
+## Pipeline Datapath
+
+![5-Stage Pipelined MIPS Datapath](datapath.jpg)
+
+The datapath follows a standard 5-stage MIPS pipeline architecture:
+
+- Pipeline registers: IF/ID, ID/EX, EX/MEM, MEM/WB
+- ALU used for arithmetic, logic, branch comparison, and address calculation
+- Forwarding paths from EX/MEM and MEM/WB to EX stage
+- Hazard detection logic controls PC write, IF/ID write, and ID/EX flush
+- Branch resolution performed in the ID stage, with wrong-path instruction flush
+
+---
+
+## Project Structure
+
+```text
+Pipelined-CPU/
+¢u¢w IF/                 # Instruction Fetch
+¢x  ¢u¢w IF.v
+¢x  ¢u¢w IF_ID.v
+¢x  ¢|¢w instruction_memory.v
+¢x
+¢u¢w ID/                 # Instruction Decode
+¢x  ¢u¢w ID.v
+¢x  ¢u¢w decoder.v
+¢x  ¢u¢w reg_file.v
+¢x  ¢u¢w sign_extend.v
+¢x  ¢|¢w ID_EX.v
+¢x
+¢u¢w EX/                 # Execute
+¢x  ¢u¢w ALU.v
+¢x  ¢u¢w EX.v
+¢x  ¢|¢w EX_MEM.v
+¢x
+¢u¢w MEM/                # Memory Access
+¢x  ¢u¢w data_memory.v
+¢x  ¢|¢w MEM_WB.v
+¢x
+¢u¢w WB/                 # Write Back
+¢x  ¢|¢w WB.v
+¢x
+¢u¢w common/             # Hazard handling units
+¢x  ¢u¢w forwarding_unit.v
+¢x  ¢|¢w hazard_detection_unit.v
+¢x
+¢u¢w result/             # Waveforms and figures
+¢x  ¢u¢w forwarding.jpg
+¢x  ¢u¢w load-use-hazard.jpg
+¢x  ¢|¢w branch-hazard.jpg
+¢x
+¢u¢w datapath.jpg        # Pipelined datapath diagram
+¢u¢w instruction1.txt    # RAW hazard (forwarding)
+¢u¢w instruction2.txt    # Load-use hazard
+¢u¢w instruction3.txt    # Control hazard (branch)
+¢u¢w top_module.v
+¢u¢w testbench.v
+¢u¢w cpu.vcd
+¢|¢w README.md
+```
+
+This structure mirrors the actual pipeline datapath and control logic.
+
+---
+
+## RAW Data Hazard (Forwarding)
 
 ### Instruction Sequence
 ```asm
-00100000000000010000000000000101 // 0x00: addi $1,$0,5   ; $1 = 5
-00100000000000100000000000000111 // 0x04: addi $2,$0,7   ; $2 = 7
-00000000001000100001100000100000 // 0x08: add  $3,$1,$2  ; $3 = 12
-00000000011000110010000000100000 // 0x0C: add  $4,$3,$3  ; $4 = 24
+addi $1,$0,5
+addi $2,$0,7
+add  $3,$1,$2
+add  $4,$3,$3
 ```
 
 ### Description
 
-This sequence introduces **RAW (Read-After-Write) data hazards**, where subsequent instructions depend on results produced by previous ALU operations.
+- ALU results are produced at the end of the EX stage
+- Dependent instructions require operands in their EX stage
+- Data is forwarded from **EX/MEM or MEM/WB to EX**
+- **No pipeline stall is required**
 
-- ALU results are produced at the **end of the EX stage**
-- The next instruction requires operands in its **EX stage**
-- **Forwarding paths (EX/MEM â†’ EX and MEM/WB â†’ EX)** supply the correct data
-- **No stalling is required**
-
-### Result
-
-- Pipeline proceeds without interruption
-- Correct values are forwarded directly to the ALU inputs
-
-ðŸ“· **Waveform**: ![RAW hazard resolved by forwarding](result/forwarding.jpg)  
-**RAW hazard resolved by forwarding**
+**Waveform**  
+![RAW hazard resolved by forwarding](result/forwarding.jpg)
 
 ---
 
-## 2ï¸âƒ£ Load-Use Hazard (Stall + Bubble Insertion)
+## Load-Use Hazard (Stall + Bubble)
 
 ### Instruction Sequence
 ```asm
-00100000000000010000000000000101 // addi $1,$0,5
-10101100000000010000000000000100 // sw   $1,4($0)
-10001100000000010000000000000100 // lw   $1,4($0)   ; load-use hazard source
-00000000001000010001000000100000 // add  $2,$1,$1   ; uses lw result â†’ stall
+addi $1,$0,5
+sw   $1,4($0)
+lw   $1,4($0)
+add  $2,$1,$1
 ```
 
 ### Description
 
-This sequence demonstrates a **load-use RAW hazard**, a special case of data hazard:
-
-- Load data becomes available **only after the MEM stage**
-- The dependent `add` instruction needs the value in its **EX stage**
+- Load data becomes available only after the MEM stage
 - Forwarding alone is insufficient
+- Pipeline behavior:
+  - PC and IF/ID stalled for one cycle
+  - Bubble inserted via ID/EX flush
+  - Forwarding resumes after data becomes available
 
-### Hazard Handling
-
-- **PC and IF/ID are stalled for 1 cycle**
-- A **bubble (NOP)** is injected into the pipeline via ID/EX flush
-- After one cycle, forwarding supplies the loaded data
-
-### Result
-
-- Exactly **one stall cycle**
-- Correct execution without incorrect data usage
-
-ðŸ“· **Waveform**: ![Load-use hazard with stall and bubble](result/load-use-hazard.jpg)
-  
-**Load-use RAW hazard requiring stall + bubble**
+**Waveform**  
+![Load-use hazard](result/load-use-hazard.jpg)
 
 ---
 
-## 3ï¸âƒ£ Control Hazard Due to Branch (Stall + Flush)
+## Control Hazard (Branch)
 
 ### Instruction Sequence
 ```asm
-00100000000000010000000000000101 // addi $1,$0,5
-00010000001000010000000000000010 // beq  $1,$1,+2   ; branch taken
-00100000000000100000000000001001 // addi $2,$0,9   ; flushed
-00100000000000100000000000001000 // addi $2,$0,8   ; flushed (offset)
-00100000000000100000000000000111 // addi $2,$0,7   ; branch target
+addi $1,$0,5
+beq  $1,$1,+2
+addi $2,$0,9   # flushed
+addi $2,$0,8   # flushed
+addi $2,$0,7   # branch target
 ```
 
 ### Description
 
-This sequence demonstrates a **control hazard caused by a branch instruction**.
+- Branch decision resolved in the ID stage
+- While unresolved:
+  - PC and IF/ID are stalled
+- When branch is taken:
+  - Wrong-path instruction is flushed
+  - PC redirected to branch target
 
-- Branch decision is made in the **ID stage**
-- Until the outcome is known, the pipeline cannot safely fetch the next instruction
-
-### Hazard Handling
-
-- **PC and IF/ID are stalled** while waiting for branch resolution
-- Once the branch is confirmed taken:
-  - The incorrectly fetched instruction is **flushed**
-  - PC is redirected to the branch target
-
-### Result
-
-- Correct control flow
-- No execution of wrong-path instructions
-
-ðŸ“· **Waveform**: ![Control hazard due to branch](result/branch-hazard.jpg)  
-**Control hazard due to branch with stall and flush**
+**Waveform**  
+![Control hazard due to branch](result/branch-hazard.jpg)
 
 ---
 
-## ðŸ§© Hazard Classification Summary
+## Hazard Summary
 
 | Hazard Type | Cause | Resolution |
 |------------|------|------------|
-| RAW hazard | ALU result dependency | Forwarding |
-| Load-use RAW hazard | Load data latency | Stall + bubble |
-| Control hazard | Branch decision uncertainty | Stall + flush |
+| RAW hazard | ALU dependency | Forwarding |
+| Load-use hazard | Load latency | Stall + bubble |
+| Control hazard | Branch decision | Stall + flush |
 
-> **Note**  
 > All data hazards in this design are **RAW hazards**.  
-> Load-use hazards are a special case of RAW hazards where forwarding is insufficient.
+> Load-use hazards are a special case where forwarding is insufficient.
 
 ---
 
-## âœ… Key Takeaways
+## Summary
 
-- Hazard **causes** and **resolution mechanisms** are clearly separated
-- Stalls are applied **only when strictly necessary**
-- Bubble insertion and flushing are handled cleanly via control logic
-- Waveforms verify **timing-correct pipeline behavior**
-
-This project demonstrates a complete and correct implementation of hazard handling in a classic **5-stage pipelined MIPS CPU**.
+- Complete **5-stage pipelined MIPS CPU**
+- Clean separation of datapath and hazard control logic
+- Stalls applied only when strictly necessary
+- Correct timing behavior verified by waveforms
