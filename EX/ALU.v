@@ -10,6 +10,7 @@ module ALU(
     output reg [31:0] result
 );
 
+// Hello World!
 
 always @(*) begin
     case (ALU_control)
